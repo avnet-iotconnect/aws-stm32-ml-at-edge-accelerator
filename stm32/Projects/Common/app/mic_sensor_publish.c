@@ -293,7 +293,9 @@ void vMicSensorPublishTask(void *pvParameters)
 
 	if (uxTopicLen > 0)
 	{
-		uxTopicLen = strlcat(pcTopicString, "/" MQTT_PUBLISH_TOPIC, MQTT_PUBLICH_TOPIC_STR_LEN);
+		strcpy(pcTopicString, "$aws/rules/msg_d2c_rpt/IotStagedevIotStackCode8EEB880A-nik1/XG4ENRV/2.1/0");
+		uxTopicLen = strlen(pcTopicString);
+		//uxTopicLen = strlcat(pcTopicString, "/" MQTT_PUBLISH_TOPIC, MQTT_PUBLICH_TOPIC_STR_LEN);
 	}
 
 	if ((uxTopicLen == 0) || (uxTopicLen >= MQTT_PUBLICH_TOPIC_STR_LEN))
@@ -349,7 +351,8 @@ void vMicSensorPublishTask(void *pvParameters)
 			}
 			/* Write to */
 			bytesWritten = snprintf(payloadBuf, (size_t)MQTT_PUBLISH_MAX_LEN,
-									"{\"class\":\"%s\"}", sAiClassLabels[max_idx]);
+					"{\"d\":[{\"d\":{\"version\":\"MLDEMO-1.0\",\"class\":\"%s\"}}],\"mt\":0,\"cd\":\"XG4E2EW\"}",
+					sAiClassLabels[max_idx]);
 
 			LogInfo("%s", payloadBuf);
 			if (xIsMqttConnected() == pdTRUE)

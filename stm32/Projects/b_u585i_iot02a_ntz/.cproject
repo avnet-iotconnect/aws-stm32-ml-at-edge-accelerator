@@ -82,6 +82,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/coreMQTTAgent/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/coreMQTT/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/coreMQTT/interface}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/http-parser}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/coreHTTP/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/coreHTTP/interface}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/CommonIO/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Libraries/CommonIO/gpio}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Common/boards}&quot;"/>
@@ -176,7 +179,7 @@
 						<entry excluding="Common|Drivers/bsp/b_u585i_iot02a_ospi.c|Inc|Drivers/bsp/b_u585i_iot02a_usbpd_pwr.c|Src|Drivers/bsp/b_u585i_iot02a_eeprom.c|Drivers/bsp/b_u585i_iot02a_camera.c|Libraries" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="app/env_sensor_publish.c|app/audio_capture.c|app/defender|app/shadow_device_task.c|app/motion_sensors_publish.c|crypto/mbedtls_ans1_utils.c|crypto/PkiObjectAsn1Utils.c|app/mqtt/subscription_manager.c|sys/time|net/time_agent.c|mcuboot/**|net/PkiObjectAsn1Utils.c|net/mbedtls_transport_pkcs11_ec.c|net/mbedtls_transport_pkcs11.c|net/mbedtls_ans1_utils.c|sys/tfm_ns_interface_freertos.c|net/strptime.c|app/TimeSyncTask.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Common"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
-						<entry excluding="trusted-firmware-m/interface/src|mbedtls/library/psa_crypto.c|mbedtls/library/psa_crypto_driver_wrappers.c|mbedtls/library/psa_crypto_client.c|mbedtls/library/psa_its_file.c|mbedtls/library/psa_crypto_ecp.c|mbedtls/library/psa_crypto_aead.c|mbedtls/library/psa_crypto_se.c|mbedtls/library/psa_crypto_rsa.c|tinycbor/open_memstream.c|mbedtls/library/psa_crypto_storage.c|ota/ota_http.c|mbedtls/library/psa_crypto_mac.c|mbedtls/library/psa_crypto_hash.c|mbedtls/library/psa_crypto_cipher.c|pkcs11-psa|mbedtls/library/psa_crypto_slot_management.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Libraries"/>
+						<entry excluding="http-parser/bench.c|http-parser/fuzzers|http-parser/contrib|http-parser/test.c|trusted-firmware-m/interface/src|mbedtls/library/psa_crypto.c|mbedtls/library/psa_crypto_driver_wrappers.c|mbedtls/library/psa_crypto_client.c|mbedtls/library/psa_its_file.c|mbedtls/library/psa_crypto_ecp.c|mbedtls/library/psa_crypto_aead.c|mbedtls/library/psa_crypto_se.c|mbedtls/library/psa_crypto_rsa.c|tinycbor/open_memstream.c|mbedtls/library/psa_crypto_storage.c|ota/ota_http.c|mbedtls/library/psa_crypto_mac.c|mbedtls/library/psa_crypto_hash.c|mbedtls/library/psa_crypto_cipher.c|pkcs11-psa|mbedtls/library/psa_crypto_slot_management.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Libraries"/>
 						<entry excluding="stm32u5xx_hal_msp.c|stm32u5xx_hal_timebase_tim.c|startup_stm32u5xx_ns.c|system_stm32u5xx_ns.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 					</sourceEntries>
 				</configuration>

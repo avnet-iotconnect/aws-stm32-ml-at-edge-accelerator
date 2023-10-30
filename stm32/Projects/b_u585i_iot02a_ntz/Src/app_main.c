@@ -222,9 +222,9 @@ void vInitTask( void * pvArgs )
     xResult = xTaskCreate( &net_main, "MxNet", 1024, NULL, 23, NULL );
     configASSERT( xResult == pdTRUE );
 
-#if 1
     xResult = xTaskCreate( vMQTTAgentTask, "MQTTAgent", 2048, NULL, 10, NULL );
     configASSERT( xResult == pdTRUE );
+#if 0
 
     xResult = xTaskCreate( vOTAUpdateTask, "OTAUpdate", 4096, NULL, tskIDLE_PRIORITY + 1, NULL );
     configASSERT( xResult == pdTRUE );
@@ -232,6 +232,7 @@ void vInitTask( void * pvArgs )
     xResult = xTaskCreate( vMicSensorPublishTask, "MicSense", 1024, NULL, 6, NULL );
     configASSERT( xResult == pdTRUE );
 #else
+
     extern void vHTTPSTestTask(void *);
     xResult = xTaskCreate( vHTTPSTestTask, "HTTPSTestTask", 4096, NULL, tskIDLE_PRIORITY + 1, NULL );
     configASSERT( xResult == pdTRUE );

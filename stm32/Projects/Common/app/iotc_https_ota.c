@@ -12,9 +12,42 @@
 #include "FreeRTOS.h"
 #include "mbedtls_transport.h"
 #include "core_http_client.h"
+#include "ota_pal.h"
 
+#define IOTCONNECT_BALTIMORE_CYBER_TRUST_ROOT \
+"-----BEGIN CERTIFICATE-----\n"\
+"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\n"\
+"-----END CERTIFICATE-----\n"
 
-#define IOTCONNECT_DIGICERT_GLOBAL_ROOT_G2 (\
+#define IOTCONNECT_DIGICERT_GLOBAL_ROOT_G2 \
 "-----BEGIN CERTIFICATE-----\n"\
 "MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh\n"\
 "MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n"\
@@ -39,7 +72,7 @@
 "-----END CERTIFICATE-----\n"
 
 // CN = Go Daddy Root Certificate Authority - G2
-#define GODADDY_ROOT_CERTIFICATE_AUTHORITY_G2 (\
+#define GODADDY_ROOT_CERTIFICATE_AUTHORITY_G2 \
 "-----BEGIN CERTIFICATE-----\n"\
 "MIIDxTCCAq2gAwIBAgIBADANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UEBhMCVVMx\n"\
 "EDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAYBgNVBAoT\n"\
@@ -62,31 +95,42 @@
 "2GTzLH4U/ALqn83/B2gX2yKQOC16jdFU8WnjXzPKej17CuPKf1855eJ1usV2GDPO\n"\
 "LPAvTK33sefOT6jEm0pUBsV/fdUID+Ic/n4XuKxe9tQWskMJDE32p2u0mYRlynqI\n"\
 "4uJEvlz36hz1\n"\
-"-----END CERTIFICATE-----\n")
+"-----END CERTIFICATE-----\n"
 
+ // 9 megabytes will be 7 digits
+#define DATA_BYTE_SIZE_CHAR_MAX 7
 
-/* Template HTTP request for a GET request. */
-#define HTTPS_TEST_GET_HEADERS         \
-    "GET / HTTP/1.1\r\n" \
-    "Content-Type: application/json\r\n"      \
-    "Connection: close\r\n"      \
-    "\r\n"
+// NOTE: If this chunk size is 4k or more, this error happens during initial chunk download:
+// Failed to read data: Error: SSL - Bad input parameters to function : <No-Low-Level-Code>. (mbedtls_transport.c:1649)
+#define DATA_CHUNK_SIZE (1024 * 2)
+/*
+static buff_data_chunk[DATA_CHUNK_SIZE];
+*/
 
-#define HTTPS_TEST_GET_HEADERS_LENGTH               ( sizeof( HTTPS_TEST_GET_HEADERS ) - 1U )
-
-#define HEADER_BUFFER_LENGTH 512
+#define HEADER_BUFFER_LENGTH 2048
 static uint8_t buff_headers[HEADER_BUFFER_LENGTH];
 
-#define RESPONSE_BUFFER_LENGTH 6000
+#define RESPONSE_BUFFER_LENGTH (DATA_CHUNK_SIZE + 1024) /* base response buffer on chunk size and add a little extra */
 static uint8_t buff_response[RESPONSE_BUFFER_LENGTH];
 
 //PkiObject_t ca_certificates[] = { PKI_OBJ_PEM(IOTCONNECT_DIGICERT_GLOBAL_ROOT_G2) };
-static PkiObject_t ca_certificates[] = { PKI_OBJ_PEM((const unsigned char *)GODADDY_ROOT_CERTIFICATE_AUTHORITY_G2, sizeof(GODADDY_ROOT_CERTIFICATE_AUTHORITY_G2)) };
+//static PkiObject_t ca_certificates[] = { PKI_OBJ_PEM((const unsigned char *)GODADDY_ROOT_CERTIFICATE_AUTHORITY_G2, sizeof(GODADDY_ROOT_CERTIFICATE_AUTHORITY_G2)) };
+static PkiObject_t ca_certificates[] = {PKI_OBJ_PEM((const unsigned char *)IOTCONNECT_BALTIMORE_CYBER_TRUST_ROOT, sizeof(IOTCONNECT_BALTIMORE_CYBER_TRUST_ROOT))};
+
+static void setup_request(HTTPRequestInfo_t* request, const char* method, const char* host, const char* path) {
+    request->pMethod = method;
+    request->methodLen = strlen(method);
+    request->pPath = path;
+    request->pathLen = strlen(path);
+    request->pHost = host;
+    request->hostLen = strlen(path);
+    request->reqFlags = HTTP_REQUEST_KEEP_ALIVE_FLAG;
+}
 
 static void https_test(const char* host, const char* path) {
 	TlsTransportStatus_t tls_transport_status;
 	HTTPStatus_t http_status;
-
+	OtaPalStatus_t pal_status;
 	const char * alpn_protocols[] = {  NULL };
 
     NetworkContext_t* network_conext = mbedtls_transport_allocate();
@@ -109,9 +153,8 @@ static void https_test(const char* host, const char* path) {
         return;
     }
 
-    vTaskDelay( 10000 );
-
-    tls_transport_status = mbedtls_transport_connect( network_conext,
+    tls_transport_status = mbedtls_transport_connect(
+    	network_conext,
     	host,
         443,
         5000,
@@ -136,55 +179,148 @@ static void https_test(const char* host, const char* path) {
     response.bufferLen = sizeof(buff_response);
 
     HTTPRequestInfo_t request = { 0 };
-    request.pMethod = HTTP_METHOD_GET;
-    request.methodLen = sizeof( HTTP_METHOD_GET ) - 1;
-    request.pPath = path;
-    request.pathLen = strlen(path);
-    request.pHost = host;
-    request.hostLen = strlen(path);
+    setup_request(&request, HTTP_METHOD_HEAD, host, path);
 
     http_status = HTTPClient_InitializeRequestHeaders( &headers, &request );
 	if (0 != http_status) {
     	LogError("HTTP failed to initialize headers! Error: %s", HTTPClient_strerror(http_status));
     	return;
 	}
-
-	http_status = HTTPClient_Send(
+/*
+	// Here we get the total length.
+	http_status = HTTPClient_AddRangeHeader(&headers, 0, 0);
+	if (0 != http_status) {
+	    	LogError("HTTP failed to add headers! Error: %s", HTTPClient_strerror(http_status));
+	    	return;
+		}
+*/
+    http_status = HTTPClient_Send(
 		&transport_if,
 		&headers, /* HTTPRequestHeaders_t  pRequestHeaders*/
 		NULL, /*const uint8_t * pRequestBodyBuf*/
 		0, /* size_t reqBodyBufLen*/
 		&response,
-		HTTP_RESPONSE_CONNECTION_CLOSE_FLAG /* uint32_t sendFlags*/
+		0 /* uint32_t sendFlags*/
 	);
 	if (0 != http_status) {
-    	LogError("HTTP Error: %s", HTTPClient_strerror(http_status));
+    	LogError("HTTP Send Error: %s", HTTPClient_strerror(http_status));
 	}
 
-	LogInfo("Response: %.*s", response.bodyLen, response.pBody);
+	// NOTE: AWS S3 may be returning Content-Range
+	const char* data_length_str = NULL;
+	size_t data_length_str_len = 0;
+	http_status = HTTPClient_ReadHeader( &response,
+		"Content-Length",
+		sizeof("Content-Length") - 1,
+		&data_length_str,
+		&data_length_str_len
+	);
+	if (0 != http_status) {
+    	LogError("HTTP Error while obtaining headers: %s", HTTPClient_strerror(http_status));
+	}
 
+	if (response.statusCode != 200) {
+		LogInfo("Response status code is: %u", response.statusCode);
+	}
 
-	// wait for network
-    vTaskDelay(10000);
+	if (NULL != data_length_str) {
+		LogInfo("Response data length: %.*s", data_length_str_len, data_length_str);
+	}
 
+	if (data_length_str_len > DATA_BYTE_SIZE_CHAR_MAX) {
+		LogInfo("Unsupported data length: %lu", data_length_str_len);
+		return;
+	}
+
+	//LogInfo("Response body: %.*s", response.bodyLen, response.pBody);
+
+	int data_length = 0;
+	char data_length_buffer[DATA_BYTE_SIZE_CHAR_MAX + 1]; // for scanf to deal with a null terminated string
+	strncpy(data_length_buffer, data_length_str, data_length_str_len);
+	if (1 != sscanf(data_length_buffer, "%d", &data_length)) {
+		LogInfo("Could not convert data length to number");
+		return;
+	}
+
+	LogInfo("Response data length (number) is %d", data_length);
+
+	OtaFileContext_t file_context;
+	file_context.fileSize = (uint32_t)data_length;
+	file_context.pFilePath = (uint8_t)"b_u585i_iot02a_ntz.bin";
+	file_context.filePathMaxSize = (uint16_t)strlen(file_context.pFilePath);
+
+	pal_status = otaPal_CreateFileForRx(&file_context);
+	if (OtaPalSuccess != pal_status) {
+		LogError("Ota failed to create file. Error: %u", pal_status);
+	}
+	// OtaPalImageState_t image_state = otaPal_GetPlatformImageState( OtaFileContext_t * const pFileContext );
+
+	for (int data_start = 0; data_start < data_length; data_start += DATA_CHUNK_SIZE) {
+		int data_end = data_start + DATA_CHUNK_SIZE;
+		if (data_end > data_length) {
+			data_end = data_length;
+		}
+
+	    http_status = HTTPClient_InitializeRequestHeaders(&headers, &request);
+		if (0 != http_status) {
+	    	LogError("HTTP failed to initialize headers! Error: %s", HTTPClient_strerror(http_status));
+	    	return;
+		}
+		http_status = HTTPClient_AddRangeHeader(&headers, data_start, data_end - 1);
+		if (0 != http_status) {
+			LogError("HTTP failed to add range header! Error: %s", HTTPClient_strerror(http_status));
+			return;
+		}
+
+		// TODO: not sure if we need to reset here
+		memset(&request, 0, sizeof(request));
+	    setup_request(&request, HTTP_METHOD_GET, host, path);
+
+	    http_status = HTTPClient_Send(
+			&transport_if,
+			&headers, /* HTTPRequestHeaders_t  pRequestHeaders*/
+			NULL, /*const uint8_t * pRequestBodyBuf*/
+			0, /* size_t reqBodyBufLen*/
+			&response,
+			0 /* uint32_t sendFlags*/
+		);
+		if (0 != http_status) {
+	    	LogError("HTTP Send Error: %s", HTTPClient_strerror(http_status));
+	    	return;
+		}
+	    LogInfo("%d-%d(%d) ", data_start, data_end - 1, (int)response.bodyLen);
+/*
+	    uint16_t bytes_written = otaPal_WriteBlock(
+	    	&file_context,
+			data_start,
+			response.pBody,
+			response.bodyLen
+	    );
+	    if (bytes_written != response.bodyLen) {
+	    	LogError("Expected to write %d bytes, but wrote %u!", response.bodyLen, bytes_written);
+	    	return;
+	    }
+	    */
+	}
+
+	pal_status = otaPal_ActivateNewImage(&file_context);
+	if (OtaPalSuccess != pal_status) {
+		LogError("OTA failed activate the downloaded firwmare. Error: %u", pal_status);
+	}
+    vTaskDelay(100);
     mbedtls_transport_disconnect(network_conext);
 
-/*
-
-    HTTPStatus_t HTTPClient_Send( const TransportInterface_t * pTransport,
-                              HTTPRequestHeaders_t * pRequestHeaders,
-                              const uint8_t * pRequestBodyBuf,
-                              size_t reqBodyBufLen,
-                              HTTPResponse_t * pResponse,
-                              uint32_t sendFlags );
-}
-*/
 }
 
 void vHTTPSTestTask( void * parameters) {
     (void) parameters;
 
-    https_test("discovery.iotconnect.io", "/");
+    vTaskDelay( 15000 );
+
+
+    //https_test("discovery.iotconnect.io", "/");
+    https_test("saleshosted.z13.web.core.windows.net", "/demo/st/b_u585i_iot02a_ntz-orig.bin");
+
 	LogInfo("HTTPS Test Done.");
 
     while (true) {

@@ -170,31 +170,25 @@ static void https_test(const char* host, const char* path) {
 	transport_if.send = mbedtls_transport_send;
 	transport_if.recv = mbedtls_transport_recv;
 
-	HTTPRequestHeaders_t headers = {0};
-    headers.pBuffer = buff_headers;
-	headers.bufferLen = sizeof(buff_headers);
-
     static HTTPResponse_t response = {0};
     response.pBuffer = buff_response;
     response.bufferLen = sizeof(buff_response);
 
+    HTTPRequestHeaders_t headers = {0};
+    headers.pBuffer = buff_headers;
+	headers.bufferLen = sizeof(buff_headers);
+
+
     HTTPRequestInfo_t request = { 0 };
     setup_request(&request, HTTP_METHOD_HEAD, host, path);
 
-    http_status = HTTPClient_InitializeRequestHeaders( &headers, &request );
+    http_status = HTTPClient_InitializeRequestHeaders( &headers, &request);
 	if (0 != http_status) {
     	LogError("HTTP failed to initialize headers! Error: %s", HTTPClient_strerror(http_status));
     	return;
 	}
-/*
-	// Here we get the total length.
-	http_status = HTTPClient_AddRangeHeader(&headers, 0, 0);
-	if (0 != http_status) {
-	    	LogError("HTTP failed to add headers! Error: %s", HTTPClient_strerror(http_status));
-	    	return;
-		}
-*/
-    http_status = HTTPClient_Send(
+
+	http_status = HTTPClient_Send(
 		&transport_if,
 		&headers, /* HTTPRequestHeaders_t  pRequestHeaders*/
 		NULL, /*const uint8_t * pRequestBodyBuf*/
@@ -223,9 +217,12 @@ static void https_test(const char* host, const char* path) {
 		LogInfo("Response status code is: %u", response.statusCode);
 	}
 
-	if (NULL != data_length_str) {
-		LogInfo("Response data length: %.*s", data_length_str_len, data_length_str);
+	if (NULL == data_length_str || 0 == data_length_str_len) {
+		LogInfo("Could not obtain data length!");
+		return;
 	}
+
+	LogInfo("Response data length: %.*s", data_length_str_len, data_length_str);
 
 	if (data_length_str_len > DATA_BYTE_SIZE_CHAR_MAX) {
 		LogInfo("Unsupported data length: %lu", data_length_str_len);
@@ -246,20 +243,28 @@ static void https_test(const char* host, const char* path) {
 
 	OtaFileContext_t file_context;
 	file_context.fileSize = (uint32_t)data_length;
-	file_context.pFilePath = (uint8_t)"b_u585i_iot02a_ntz.bin";
-	file_context.filePathMaxSize = (uint16_t)strlen(file_context.pFilePath);
+	file_context.pFilePath = (uint8_t *)"b_u585i_iot02a_ntz.bin";
+	file_context.filePathMaxSize = (uint16_t)strlen((const char*)file_context.pFilePath);
 
 	pal_status = otaPal_CreateFileForRx(&file_context);
 	if (OtaPalSuccess != pal_status) {
-		LogError("Ota failed to create file. Error: %u", pal_status);
+		LogError("OTA failed to create file. Error: 0x%x", pal_status);
 	}
 	// OtaPalImageState_t image_state = otaPal_GetPlatformImageState( OtaFileContext_t * const pFileContext );
 
+	int progress_ctr = 0;
 	for (int data_start = 0; data_start < data_length; data_start += DATA_CHUNK_SIZE) {
 		int data_end = data_start + DATA_CHUNK_SIZE;
 		if (data_end > data_length) {
 			data_end = data_length;
 		}
+
+		memset(&request, 0, sizeof(request));
+		memset(&headers, 0, sizeof(headers));
+	    headers.pBuffer = buff_headers;
+		headers.bufferLen = sizeof(buff_headers);
+
+	    setup_request(&request, HTTP_METHOD_GET, host, path);
 
 	    http_status = HTTPClient_InitializeRequestHeaders(&headers, &request);
 		if (0 != http_status) {
@@ -271,10 +276,6 @@ static void https_test(const char* host, const char* path) {
 			LogError("HTTP failed to add range header! Error: %s", HTTPClient_strerror(http_status));
 			return;
 		}
-
-		// TODO: not sure if we need to reset here
-		memset(&request, 0, sizeof(request));
-	    setup_request(&request, HTTP_METHOD_GET, host, path);
 
 	    http_status = HTTPClient_Send(
 			&transport_if,
@@ -288,27 +289,40 @@ static void https_test(const char* host, const char* path) {
 	    	LogError("HTTP Send Error: %s", HTTPClient_strerror(http_status));
 	    	return;
 		}
-	    LogInfo("%d-%d(%d) ", data_start, data_end - 1, (int)response.bodyLen);
-/*
-	    uint16_t bytes_written = otaPal_WriteBlock(
+
+		if (progress_ctr % 30 == 0) {
+		    LogInfo("Progress %d%%...", data_start * 100 / data_length);
+			progress_ctr = 1;
+		} else {
+			progress_ctr++;
+		}
+
+
+	    int16_t bytes_written = otaPal_WriteBlock(
 	    	&file_context,
-			data_start,
-			response.pBody,
-			response.bodyLen
+			(uint32_t) data_start,
+			(uint8_t*) response.pBody,
+			(uint32_t) response.bodyLen
 	    );
 	    if (bytes_written != response.bodyLen) {
 	    	LogError("Expected to write %d bytes, but wrote %u!", response.bodyLen, bytes_written);
 	    	return;
 	    }
-	    */
 	}
+    mbedtls_transport_disconnect(network_conext);
+
+    pal_status = otaPal_CloseFile(&file_context);
+	if (OtaPalSuccess != pal_status) {
+		LogError("OTA failed close the downloaded firmware file. Error: 0x%x", pal_status);
+	}
+
+    vTaskDelay(100);
 
 	pal_status = otaPal_ActivateNewImage(&file_context);
 	if (OtaPalSuccess != pal_status) {
-		LogError("OTA failed activate the downloaded firwmare. Error: %u", pal_status);
+		LogError("OTA failed activate the downloaded firmware. Error: 0x%x", pal_status);
 	}
     vTaskDelay(100);
-    mbedtls_transport_disconnect(network_conext);
 
 }
 
@@ -317,8 +331,6 @@ void vHTTPSTestTask( void * parameters) {
 
     vTaskDelay( 15000 );
 
-
-    //https_test("discovery.iotconnect.io", "/");
     https_test("saleshosted.z13.web.core.windows.net", "/demo/st/b_u585i_iot02a_ntz-orig.bin");
 
 	LogInfo("HTTPS Test Done.");
@@ -326,7 +338,5 @@ void vHTTPSTestTask( void * parameters) {
     while (true) {
     	vTaskDelay(10000);
     }
-
-
 }
 

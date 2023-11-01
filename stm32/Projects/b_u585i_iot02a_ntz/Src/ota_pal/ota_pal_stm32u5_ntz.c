@@ -919,6 +919,7 @@ OtaPalStatus_t otaPal_CloseFile( OtaFileContext_t * const pxFileContext )
         ( pxContext->xPalState == OTA_PAL_FILE_OPEN ) )
 
     {
+#if 0
         unsigned char pucHashBuffer[ MBEDTLS_MD_MAX_SIZE ];
         size_t uxHashLength = 0;
 
@@ -928,7 +929,6 @@ OtaPalStatus_t otaPal_CloseFile( OtaFileContext_t * const pxFileContext )
         {
             uxOtaStatus = OTA_PAL_COMBINE_ERR( OtaPalFileClose, 0 );
         }
-
         if( OTA_PAL_MAIN_ERR( uxOtaStatus ) == OtaPalSuccess )
         {
             uxOtaStatus = prvValidateSignature( ( char * ) pxFileContext->pCertFilepath,
@@ -937,7 +937,7 @@ OtaPalStatus_t otaPal_CloseFile( OtaFileContext_t * const pxFileContext )
                                                 pucHashBuffer,
                                                 uxHashLength );
         }
-
+#endif
         if( OTA_PAL_MAIN_ERR( uxOtaStatus ) == OtaPalSuccess )
         {
             pxContext->xPalState = OTA_PAL_PENDING_ACTIVATION;

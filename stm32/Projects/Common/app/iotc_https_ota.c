@@ -97,6 +97,99 @@
 "4uJEvlz36hz1\n"\
 "-----END CERTIFICATE-----\n"
 
+// Starfield Services Root Certificate Authority - G2
+#define STARFIELD_ROOT_CA_G2 \
+"-----BEGIN CERTIFICATE-----\n"\
+"MIID7zCCAtegAwIBAgIBADANBgkqhkiG9w0BAQsFADCBmDELMAkGA1UEBhMCVVMx\n"\
+"EDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxJTAjBgNVBAoT\n"\
+"HFN0YXJmaWVsZCBUZWNobm9sb2dpZXMsIEluYy4xOzA5BgNVBAMTMlN0YXJmaWVs\n"\
+"ZCBTZXJ2aWNlcyBSb290IENlcnRpZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTA5\n"\
+"MDkwMTAwMDAwMFoXDTM3MTIzMTIzNTk1OVowgZgxCzAJBgNVBAYTAlVTMRAwDgYD\n"\
+"VQQIEwdBcml6b25hMRMwEQYDVQQHEwpTY290dHNkYWxlMSUwIwYDVQQKExxTdGFy\n"\
+"ZmllbGQgVGVjaG5vbG9naWVzLCBJbmMuMTswOQYDVQQDEzJTdGFyZmllbGQgU2Vy\n"\
+"dmljZXMgUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkgLSBHMjCCASIwDQYJKoZI\n"\
+"hvcNAQEBBQADggEPADCCAQoCggEBANUMOsQq+U7i9b4Zl1+OiFOxHz/Lz58gE20p\n"\
+"OsgPfTz3a3Y4Y9k2YKibXlwAgLIvWX/2h/klQ4bnaRtSmpDhcePYLQ1Ob/bISdm2\n"\
+"8xpWriu2dBTrz/sm4xq6HZYuajtYlIlHVv8loJNwU4PahHQUw2eeBGg6345AWh1K\n"\
+"Ts9DkTvnVtYAcMtS7nt9rjrnvDH5RfbCYM8TWQIrgMw0R9+53pBlbQLPLJGmpufe\n"\
+"hRhJfGZOozptqbXuNC66DQO4M99H67FrjSXZm86B0UVGMpZwh94CDklDhbZsc7tk\n"\
+"6mFBrMnUVN+HL8cisibMn1lUaJ/8viovxFUcdUBgF4UCVTmLfwUCAwEAAaNCMEAw\n"\
+"DwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFJxfAN+q\n"\
+"AdcwKziIorhtSpzyEZGDMA0GCSqGSIb3DQEBCwUAA4IBAQBLNqaEd2ndOxmfZyMI\n"\
+"bw5hyf2E3F/YNoHN2BtBLZ9g3ccaaNnRbobhiCPPE95Dz+I0swSdHynVv/heyNXB\n"\
+"ve6SbzJ08pGCL72CQnqtKrcgfU28elUSwhXqvfdqlS5sdJ/PHLTyxQGjhdByPq1z\n"\
+"qwubdQxtRbeOlKyWN7Wg0I8VRw7j6IPdj/3vQQF3zCepYoUz8jcI73HPdwbeyBkd\n"\
+"iEDPfUYd/x7H4c7/I9vG+o1VTqkC50cRRj70/b17KSa7qWFiNyi2LSr2EIZkyXCn\n"\
+"0q23KXB56jzaYyWf/Wi3MOxw+3WKt21gZ7IeyLnp2KhvAotnDU0mV3HaIPzBSlCN\n"\
+"sSi6\n"\
+"-----END CERTIFICATE-----"
+
+#if 0
+// Starfield Services Root Certificate Authority - G2
+#define STARFIELD_ROOT_CA_G2 \
+"-----BEGIN CERTIFICATE-----\n"\
+"MIIEdTCCA12gAwIBAgIJAKcOSkw0grd/MA0GCSqGSIb3DQEBCwUAMGgxCzAJBgNV\n"\
+"BAYTAlVTMSUwIwYDVQQKExxTdGFyZmllbGQgVGVjaG5vbG9naWVzLCBJbmMuMTIw\n"\
+"MAYDVQQLEylTdGFyZmllbGQgQ2xhc3MgMiBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0\n"\
+"eTAeFw0wOTA5MDIwMDAwMDBaFw0zNDA2MjgxNzM5MTZaMIGYMQswCQYDVQQGEwJV\n"\
+"UzEQMA4GA1UECBMHQXJpem9uYTETMBEGA1UEBxMKU2NvdHRzZGFsZTElMCMGA1UE\n"\
+"ChMcU3RhcmZpZWxkIFRlY2hub2xvZ2llcywgSW5jLjE7MDkGA1UEAxMyU3RhcmZp\n"\
+"ZWxkIFNlcnZpY2VzIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzIwggEi\n"\
+"MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDVDDrEKvlO4vW+GZdfjohTsR8/\n"\
+"y8+fIBNtKTrID30892t2OGPZNmCom15cAICyL1l/9of5JUOG52kbUpqQ4XHj2C0N\n"\
+"Tm/2yEnZtvMaVq4rtnQU68/7JuMauh2WLmo7WJSJR1b/JaCTcFOD2oR0FMNnngRo\n"\
+"Ot+OQFodSk7PQ5E751bWAHDLUu57fa4657wx+UX2wmDPE1kCK4DMNEffud6QZW0C\n"\
+"zyyRpqbn3oUYSXxmTqM6bam17jQuug0DuDPfR+uxa40l2ZvOgdFFRjKWcIfeAg5J\n"\
+"Q4W2bHO7ZOphQazJ1FTfhy/HIrImzJ9ZVGif/L4qL8RVHHVAYBeFAlU5i38FAgMB\n"\
+"AAGjgfAwge0wDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0O\n"\
+"BBYEFJxfAN+qAdcwKziIorhtSpzyEZGDMB8GA1UdIwQYMBaAFL9ft9HO3R+G9FtV\n"\
+"rNzXEMIOqYjnME8GCCsGAQUFBwEBBEMwQTAcBggrBgEFBQcwAYYQaHR0cDovL28u\n"\
+"c3MyLnVzLzAhBggrBgEFBQcwAoYVaHR0cDovL3guc3MyLnVzL3guY2VyMCYGA1Ud\n"\
+"HwQfMB0wG6AZoBeGFWh0dHA6Ly9zLnNzMi51cy9yLmNybDARBgNVHSAECjAIMAYG\n"\
+"BFUdIAAwDQYJKoZIhvcNAQELBQADggEBACMd44pXyn3pF3lM8R5V/cxTbj5HD9/G\n"\
+"VfKyBDbtgB9TxF00KGu+x1X8Z+rLP3+QsjPNG1gQggL4+C/1E2DUBc7xgQjB3ad1\n"\
+"l08YuW3e95ORCLp+QCztweq7dp4zBncdDQh/U90bZKuCJ/Fp1U1ervShw3WnWEQt\n"\
+"8jxwmKy6abaVd38PMV4s/KCHOkdp8Hlf9BRUpJVeEXgSYCfOn8J3/yNTd126/+pZ\n"\
+"59vPr5KW7ySaNRB6nJHGDn2Z9j8Z3/VyVOEVqQdZe4O/Ui5GjLIAZHYcSNPYeehu\n"\
+"VsyuLAOQ1xk4meTKCRlb/weWsKh/NEnfVqn3sF/tM+2MR7cwA130A4w=\n"\
+"-----END CERTIFICATE-----"
+#endif
+
+#if 0
+// Starfield Services Root Certificate Authority - G2
+#define STARFIELD_ROOT_CA_G2 \
+"-----BEGIN CERTIFICATE-----\n"\
+"MIIFEjCCBHugAwIBAgICAQwwDQYJKoZIhvcNAQEFBQAwgbsxJDAiBgNVBAcTG1Zh\n"\
+"bGlDZXJ0IFZhbGlkYXRpb24gTmV0d29yazEXMBUGA1UEChMOVmFsaUNlcnQsIElu\n"\
+"Yy4xNTAzBgNVBAsTLFZhbGlDZXJ0IENsYXNzIDIgUG9saWN5IFZhbGlkYXRpb24g\n"\
+"QXV0aG9yaXR5MSEwHwYDVQQDExhodHRwOi8vd3d3LnZhbGljZXJ0LmNvbS8xIDAe\n"\
+"BgkqhkiG9w0BCQEWEWluZm9AdmFsaWNlcnQuY29tMB4XDTA0MDYyOTE3MzkxNloX\n"\
+"DTI0MDYyOTE3MzkxNlowaDELMAkGA1UEBhMCVVMxJTAjBgNVBAoTHFN0YXJmaWVs\n"\
+"ZCBUZWNobm9sb2dpZXMsIEluYy4xMjAwBgNVBAsTKVN0YXJmaWVsZCBDbGFzcyAy\n"\
+"IENlcnRpZmljYXRpb24gQXV0aG9yaXR5MIIBIDANBgkqhkiG9w0BAQEFAAOCAQ0A\n"\
+"MIIBCAKCAQEAtzLI/ulxpgSFrQwRZN/OTe/IAxiHP6Gr+zymn/DDodrU2G4rU5D7\n"\
+"JKQ+hPCe6F/s5SdE9SimP3ve4CrwyK9TL57KBQGTHo9mHDmnTfpatnMEJWbrd3/n\n"\
+"WcZKmSUUVOsmx/N/GdUwcI+vsEYq/63rKe3Xn6oEh6PU+YmlNF/bQ5GCNtlmPLG4\n"\
+"uYL9nDo+EMg77wZlZnqbGRg9/3FRPDAuX749d3OyXQZswyNWmiuFJpIcpwKz5D8N\n"\
+"rwh5grg2Peqc0zWzvGnK9cyd6P1kjReAM25eSl2ZyR6HtJ0awNVuEzUjXt+bXz3v\n"\
+"1vd2wuo+u3gNHEJnawTY+Nbab4vyRKABqwIBA6OCAfMwggHvMB0GA1UdDgQWBBS/\n"\
+"X7fRzt0fhvRbVazc1xDCDqmI5zCB0gYDVR0jBIHKMIHHoYHBpIG+MIG7MSQwIgYD\n"\
+"VQQHExtWYWxpQ2VydCBWYWxpZGF0aW9uIE5ldHdvcmsxFzAVBgNVBAoTDlZhbGlD\n"\
+"ZXJ0LCBJbmMuMTUwMwYDVQQLEyxWYWxpQ2VydCBDbGFzcyAyIFBvbGljeSBWYWxp\n"\
+"ZGF0aW9uIEF1dGhvcml0eTEhMB8GA1UEAxMYaHR0cDovL3d3dy52YWxpY2VydC5j\n"\
+"b20vMSAwHgYJKoZIhvcNAQkBFhFpbmZvQHZhbGljZXJ0LmNvbYIBATAPBgNVHRMB\n"\
+"Af8EBTADAQH/MDkGCCsGAQUFBwEBBC0wKzApBggrBgEFBQcwAYYdaHR0cDovL29j\n"\
+"c3Auc3RhcmZpZWxkdGVjaC5jb20wSgYDVR0fBEMwQTA/oD2gO4Y5aHR0cDovL2Nl\n"\
+"cnRpZmljYXRlcy5zdGFyZmllbGR0ZWNoLmNvbS9yZXBvc2l0b3J5L3Jvb3QuY3Js\n"\
+"MFEGA1UdIARKMEgwRgYEVR0gADA+MDwGCCsGAQUFBwIBFjBodHRwOi8vY2VydGlm\n"\
+"aWNhdGVzLnN0YXJmaWVsZHRlY2guY29tL3JlcG9zaXRvcnkwDgYDVR0PAQH/BAQD\n"\
+"AgEGMA0GCSqGSIb3DQEBBQUAA4GBAKVi8afCXSWlcD284ipxs33kDTcdVWptobCr\n"\
+"mADkhWBKIMuh8D1195TaQ39oXCUIuNJ9MxB73HZn8bjhU3zhxoNbKXuNSm8uf0So\n"\
+"GkVrMgfHeMpkksK0hAzc3S1fTbvdiuo43NlmouxBulVtWmQ9twPMHOKRUJ7jCUSV\n"\
+"FxdzPcwl\n"\
+"-----END CERTIFICATE-----"
+#endif
+
  // 9 megabytes will be 7 digits
 #define DATA_BYTE_SIZE_CHAR_MAX 7
 
@@ -113,9 +206,7 @@ static uint8_t buff_headers[HEADER_BUFFER_LENGTH];
 #define RESPONSE_BUFFER_LENGTH (DATA_CHUNK_SIZE + 1024) /* base response buffer on chunk size and add a little extra */
 static uint8_t buff_response[RESPONSE_BUFFER_LENGTH];
 
-//PkiObject_t ca_certificates[] = { PKI_OBJ_PEM(IOTCONNECT_DIGICERT_GLOBAL_ROOT_G2) };
-//static PkiObject_t ca_certificates[] = { PKI_OBJ_PEM((const unsigned char *)GODADDY_ROOT_CERTIFICATE_AUTHORITY_G2, sizeof(GODADDY_ROOT_CERTIFICATE_AUTHORITY_G2)) };
-static PkiObject_t ca_certificates[] = {PKI_OBJ_PEM((const unsigned char *)IOTCONNECT_BALTIMORE_CYBER_TRUST_ROOT, sizeof(IOTCONNECT_BALTIMORE_CYBER_TRUST_ROOT))};
+
 
 static void setup_request(HTTPRequestInfo_t* request, const char* method, const char* host, const char* path) {
     request->pMethod = method;
@@ -127,7 +218,7 @@ static void setup_request(HTTPRequestInfo_t* request, const char* method, const 
     request->reqFlags = HTTP_REQUEST_KEEP_ALIVE_FLAG;
 }
 
-static void https_test(const char* host, const char* path) {
+static void https_download_fw(const char* host, const char* path) {
 	TlsTransportStatus_t tls_transport_status;
 	HTTPStatus_t http_status;
 	OtaPalStatus_t pal_status;
@@ -138,6 +229,14 @@ static void https_test(const char* host, const char* path) {
         LogError("Failed to allocate network context!");
         return;
     }
+
+    //PkiObject_t ca_certificates[] = { PKI_OBJ_PEM((const unsigned char *)GODADDY_ROOT_CERTIFICATE_AUTHORITY_G2, sizeof(GODADDY_ROOT_CERTIFICATE_AUTHORITY_G2)) };
+    //PkiObject_t ca_certificates[] = {PKI_OBJ_PEM((const unsigned char *)IOTCONNECT_BALTIMORE_CYBER_TRUST_ROOT, sizeof(IOTCONNECT_BALTIMORE_CYBER_TRUST_ROOT))};
+
+    // use the same TLS cert as the MQTT connection cert for S3
+    //PkiObject_t ca_certificates[] = {xPkiObjectFromLabel( TLS_ROOT_CA_CERT_LABEL)};
+
+	PkiObject_t ca_certificates[] = {PKI_OBJ_PEM((const unsigned char *)STARFIELD_ROOT_CA_G2, sizeof(STARFIELD_ROOT_CA_G2))};
 
     /* ALPN protocols must be a NULL-terminated list of strings. */
     tls_transport_status = mbedtls_transport_configure(
@@ -304,7 +403,7 @@ static void https_test(const char* host, const char* path) {
 			(uint8_t*) response.pBody,
 			(uint32_t) response.bodyLen
 	    );
-	    if (bytes_written != response.bodyLen) {
+	    if (bytes_written != (int16_t) response.bodyLen) {
 	    	LogError("Expected to write %d bytes, but wrote %u!", response.bodyLen, bytes_written);
 	    	return;
 	    }
@@ -326,14 +425,133 @@ static void https_test(const char* host, const char* path) {
 
 }
 
-void vHTTPSTestTask( void * parameters) {
+#include "sys_evt.h"
+#include "core_mqtt_agent.h"
+#include "subscription_manager.h"
+#include "mqtt_agent_task.h"
+
+/*
+AWS S3 does not have an official limit for the length of a presigned URL. However, some have encountered a presigned URL for an S3 object that was 1669 characters long, which is close to the unofficial URL length limit of 2 KB.
+Presigned URLs (PUT & GET) do not support limiting the file size. A PUT HTTP request using the presigned URL is a "single"-part upload, and the object size is limited to 5 GB.
+Signed URLs are generated with specific access permissions, expiration times, and cryptographic signatures. This ensures that only authorized users can access the content.
+*/
+#define JSON_OBJ_URL "\"url\":\""
+#define JSON_OBJ_FILENAME "\"fileName\":\""
+#define MAX_URL_LEN 2000
+char url_buff[MAX_URL_LEN + 1];
+static bool copy_until_char(char * target, const char* source, char terminator) {
+    size_t src_len = strlen(source);
+    target[0] = 0;
+    for(size_t i = 0; i < src_len; i++) {
+        int src_ch = source[i];
+        if (terminator == src_ch) {
+            target[i] = 0;
+            return true;
+        } else {
+            target[i] = source[i];
+        }
+    }
+    return false; // ran past the end of source
+}
+static void on_c2d_message( void * subscription_context, MQTTPublishInfo_t * publish_info ) {
+    (void) subscription_context;
+
+    if (!publish_info) {
+        LogError("on_c2d_message: Publish info is NULL?");
+        return;
+    }
+    LogInfo("<<< %.*s", publish_info->payloadLength, publish_info->pPayload);
+    char* payload = (char *)publish_info->pPayload;
+    payload[publish_info->payloadLength] = 0; // terminate the string just in case. Don't really care about the last char for now
+    char *url_part = strstr(payload, JSON_OBJ_URL);
+    if (!url_part) {
+        LogInfo("on_c2d_message: command received");
+        return;
+    }
+    LogInfo("on_c2d_message: OTA received");
+    if (!copy_until_char(url_buff, &url_part[strlen(JSON_OBJ_URL)], '"')) {
+        LogError("on_c2d_message: Publish info is NULL?");
+    }
+    LogInfo("URL: %s", url_buff);
+
+    char file_name_buff[100]; // TODO: limit file name length
+    char *fn_part = strstr(publish_info->pPayload, JSON_OBJ_FILENAME);
+    if (!fn_part) {
+        LogInfo("on_c2d_message: missing filename?");
+        return;
+    }
+    if (!copy_until_char(file_name_buff, &fn_part[strlen(JSON_OBJ_FILENAME)], '"')) {
+        LogError("on_c2d_message: Publish info is NULL?");
+    }
+    LogInfo("File: %s", file_name_buff);
+
+}
+
+#include "kvstore.h"
+#define DEVICE_ID_MAX_LEN 129
+#define TOPIC_STR_MAX_LEN (DEVICE_ID_MAX_LEN + 20)
+static bool subscribe_to_c2d_topic(void)
+{
+    char device_id[DEVICE_ID_MAX_LEN];
+    char sub_topic[TOPIC_STR_MAX_LEN];
+    if (KVStore_getString(CS_CORE_THING_NAME, device_id, DEVICE_ID_MAX_LEN) <= 0) {
+	    LogError("Unable to get device ID");
+	    return false;
+	}
+    sprintf(sub_topic, "iot/%s/cmd", device_id);
+
+    MQTTAgentHandle_t agent_handle = xGetMqttAgentHandle();
+    if (agent_handle == NULL )  {
+	    LogError("Unable to get agent handle");
+	    return false;
+    }
+
+    MQTTStatus_t mqtt_status = MqttAgent_SubscribeSync( agent_handle,
+		sub_topic,
+		1 /* qos */,
+		on_c2d_message,
+		NULL
+    );
+    if (MQTTSuccess != mqtt_status) {
+        LogError("Failed to SUBSCRIBE to topic with error = %u.", mqtt_status);
+        return false;
+    }
+
+    LogInfo("Subscribed to topic %s.\n\n", sub_topic);
+
+    return true;
+}
+
+static bool is_mqtt_connected(void)
+{
+	/* Wait for MQTT to be connected */
+	EventBits_t uxEvents = xEventGroupWaitBits(xSystemEvents,
+											   EVT_MASK_MQTT_CONNECTED,
+											   pdFALSE,
+											   pdTRUE,
+											   0);
+
+	return ((uxEvents & EVT_MASK_MQTT_CONNECTED) == EVT_MASK_MQTT_CONNECTED);
+}
+
+void vIOTC_Ota_Handler(void *parameters) {
     (void) parameters;
 
-    vTaskDelay( 15000 );
+    // vTaskDelay( 15000 );
 
-    https_test("saleshosted.z13.web.core.windows.net", "/demo/st/b_u585i_iot02a_ntz-orig.bin");
-
-	LogInfo("HTTPS Test Done.");
+    while (!is_mqtt_connected()) {
+        vTaskDelay( 1000 );
+    }
+    subscribe_to_c2d_topic();
+#if 0
+			/* Write to */
+			bytesWritten = snprintf(payloadBuf, (size_t)MQTT_PUBLISH_MAX_LEN,
+					"{\"d\":[{\"d\":{\"version\":\"MLDEMO-1.0\",\"class\":\"%s\"}}],\"mt\":0,\"cd\":\"XG4E2EW\"}",
+					sAiClassLabels[max_idx]);
+#endif
+    // http_download_fw("saleshosted.z13.web.core.windows.net", "/demo/st/b_u585i_iot02a_ntz-orig.bin");
+    https_download_fw("iotc-260030673750.s3.amazonaws.com", "584af730-2854-4a77-8f3b-ca1696401e08/firmware/11a5c239-ddfe-4b41-925b-deb932899de4/d378209e-d228-49ee-83d6-cb6f77d9e39d.txt?AWSAccessKeyId=ASIATZCYJGNLBR47EN7A&Expires=1698941608&x-amz-security-token=IQoJb3JpZ2luX2VjEOH%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQDN9WuZzD2ptwScwpHofSKVv6Rrpd1IR%2FThR1NhfypHBwIhAKW7qPKGtyRVynya%2BQz9Gmy%2FEOdO0eKImWocNhmUPJEjKugCCBkQABoMMjYwMDMwNjczNzUwIgzfHWTFBkKKGnhWGi4qxQL7lH3frDcPptTEfb0KrnpZBjE1QUViLc97OUZarGYWn3adn0lye%2FuPi7dQFedq3rSHM82tqOMcS%2F97KKscJdLIbnLjL71PX3wpQx5%2B4U7YPrxHDUWNjFtZTnSpJC52uLAwHHyG%2B5dB1M7HqwcaKhKVH1dny6XCVnk0dYngW0UKwl3dozZ6qe0j%2FDpenchkve8iKhuND3IEU7ds18P9ahuIPlU4CD5abH2%2F4S%2FSeoi5pCUPqefscxzQNX%2BI3zC7fsISJCFqQikUHCuQlPBcvAD5lKoLGCTMvXWV%2B5%2BR5vpwvClrLwmoIlWMzMFCAHF0xbzCCucB1%2F4quAwTaz4rFitWTzdNT1H7G%2BZIBm1FJyClwC9QvasIet4KuAtIhi4DwahaI12ciaUf7%2B4EyigXwTNuMV0Y7uEkUSZomauc4t%2BZ%2BvdQooPuMLTwiaoGOp0Bci0Yarf4MQoqNOzTU382gdydkuYsPdVIdM4Jx%2BeJASe8NPkeK805JZIv85lThxARaBFhFsoQbuRXSSvl4DAUwm4xCKtF%2F3tiPvI1eBNmADtKUblyuf95NNbCo9aDamvR9%2FgRsQqlfhPaMRR7hKgGuYPsb25g4jaXtloEFJdnbpjKoVqZnBi0zKphOKLxHFl9zFC1EZajGNyMG27sqA%3D%3D&Signature=etjJH%2FgiktanxnooCyAIdflQ7D4%3D");
+	// LogInfo("HTTPS Test Done.");
 
     while (true) {
     	vTaskDelay(10000);

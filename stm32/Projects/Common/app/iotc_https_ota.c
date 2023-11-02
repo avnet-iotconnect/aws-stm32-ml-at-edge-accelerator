@@ -190,12 +190,13 @@
 "-----END CERTIFICATE-----"
 #endif
 
- // 9 megabytes will be 7 digits
-#define DATA_BYTE_SIZE_CHAR_MAX 7
+#define S3_RANGE_RESPONSE_PREFIX "bytes 0-0/"
+// 9 megabytes will be 7 digits
+#define DATA_BYTE_SIZE_CHAR_MAX (sizeof(S3_RANGE_RESPONSE_PREFIX) + 7)
 
 // NOTE: If this chunk size is 4k or more, this error happens during initial chunk download:
 // Failed to read data: Error: SSL - Bad input parameters to function : <No-Low-Level-Code>. (mbedtls_transport.c:1649)
-#define DATA_CHUNK_SIZE (1024 * 2)
+#define DATA_CHUNK_SIZE (1024 * 4)
 /*
 static buff_data_chunk[DATA_CHUNK_SIZE];
 */
@@ -203,7 +204,7 @@ static buff_data_chunk[DATA_CHUNK_SIZE];
 #define HEADER_BUFFER_LENGTH 2048
 static uint8_t buff_headers[HEADER_BUFFER_LENGTH];
 
-#define RESPONSE_BUFFER_LENGTH (DATA_CHUNK_SIZE + 1024) /* base response buffer on chunk size and add a little extra */
+#define RESPONSE_BUFFER_LENGTH (DATA_CHUNK_SIZE + 2048) /* base response buffer on chunk size and add a little extra */
 static uint8_t buff_response[RESPONSE_BUFFER_LENGTH];
 
 
@@ -214,7 +215,7 @@ static void setup_request(HTTPRequestInfo_t* request, const char* method, const 
     request->pPath = path;
     request->pathLen = strlen(path);
     request->pHost = host;
-    request->hostLen = strlen(path);
+    request->hostLen = strlen(host);
     request->reqFlags = HTTP_REQUEST_KEEP_ALIVE_FLAG;
 }
 
@@ -256,8 +257,8 @@ static void https_download_fw(const char* host, const char* path) {
     	network_conext,
     	host,
         443,
-        5000,
-		5000
+        10000,
+		10000
     );
     if (TLS_TRANSPORT_SUCCESS != tls_transport_status) {
         LogError("HTTPS: Failed to connect! Error: %d", tls_transport_status);
@@ -278,13 +279,21 @@ static void https_download_fw(const char* host, const char* path) {
 	headers.bufferLen = sizeof(buff_headers);
 
 
+    // When using S3, use a GET with range 0-0 and then the returned size will be like bytes 0-0/XXXX where X is the actual size
+	// When using Azure Blob, use a HEAD with the URL in question and the Content-Length will contain the size.
     HTTPRequestInfo_t request = { 0 };
-    setup_request(&request, HTTP_METHOD_HEAD, host, path);
+    setup_request(&request, HTTP_METHOD_GET, host, path);
 
     http_status = HTTPClient_InitializeRequestHeaders( &headers, &request);
 	if (0 != http_status) {
     	LogError("HTTP failed to initialize headers! Error: %s", HTTPClient_strerror(http_status));
     	return;
+	}
+
+	http_status = HTTPClient_AddRangeHeader(&headers, 0, 0);
+	if (0 != http_status) {
+		LogError("HTTP failed to add initial range header for size query! Error: %s", HTTPClient_strerror(http_status));
+		return;
 	}
 
 	http_status = HTTPClient_Send(
@@ -302,9 +311,11 @@ static void https_download_fw(const char* host, const char* path) {
 	// NOTE: AWS S3 may be returning Content-Range
 	const char* data_length_str = NULL;
 	size_t data_length_str_len = 0;
+
+	// When using S3, use a GET with range 0-0 and then the returned size will be like bytes 0-0/XXXX where X is the actual size
 	http_status = HTTPClient_ReadHeader( &response,
-		"Content-Length",
-		sizeof("Content-Length") - 1,
+		"Content-Range",
+		sizeof("Content-Range") - 1,
 		&data_length_str,
 		&data_length_str_len
 	);
@@ -321,7 +332,7 @@ static void https_download_fw(const char* host, const char* path) {
 		return;
 	}
 
-	LogInfo("Response data length: %.*s", data_length_str_len, data_length_str);
+	LogInfo("Response range reported: %.*s", data_length_str_len, data_length_str);
 
 	if (data_length_str_len > DATA_BYTE_SIZE_CHAR_MAX) {
 		LogInfo("Unsupported data length: %lu", data_length_str_len);
@@ -333,7 +344,7 @@ static void https_download_fw(const char* host, const char* path) {
 	int data_length = 0;
 	char data_length_buffer[DATA_BYTE_SIZE_CHAR_MAX + 1]; // for scanf to deal with a null terminated string
 	strncpy(data_length_buffer, data_length_str, data_length_str_len);
-	if (1 != sscanf(data_length_buffer, "%d", &data_length)) {
+	if (1 != sscanf(data_length_buffer, S3_RANGE_RESPONSE_PREFIX"%d", &data_length)) {
 		LogInfo("Could not convert data length to number");
 		return;
 	}
@@ -385,13 +396,15 @@ static void https_download_fw(const char* host, const char* path) {
 			0 /* uint32_t sendFlags*/
 		);
 		if (0 != http_status) {
-	    	LogError("HTTP Send Error: %s", HTTPClient_strerror(http_status));
+	    	LogError("HTTP range(%d-%d) send error: %s", data_start, data_end - 1, HTTPClient_strerror(http_status));
 	    	return;
 		}
 
-		if (progress_ctr % 30 == 0) {
-		    LogInfo("Progress %d%%...", data_start * 100 / data_length);
-			progress_ctr = 1;
+		if (progress_ctr % 30 == 29) {
+		    LogInfo("Progress %d%%. Waiting...", data_start * 100 / data_length);
+			progress_ctr = 0;
+		    //vTaskDelay(5000); // TODO: Investigate if requests throttling is needed
+		    LogInfo("Resuming...");
 		} else {
 			progress_ctr++;
 		}
@@ -537,12 +550,14 @@ static bool is_mqtt_connected(void)
 void vIOTC_Ota_Handler(void *parameters) {
     (void) parameters;
 
-    // vTaskDelay( 15000 );
-
+    vTaskDelay( 15000 );
+#if 0
     while (!is_mqtt_connected()) {
         vTaskDelay( 1000 );
     }
     subscribe_to_c2d_topic();
+#endif
+
 #if 0
 			/* Write to */
 			bytesWritten = snprintf(payloadBuf, (size_t)MQTT_PUBLISH_MAX_LEN,
@@ -550,7 +565,7 @@ void vIOTC_Ota_Handler(void *parameters) {
 					sAiClassLabels[max_idx]);
 #endif
     // http_download_fw("saleshosted.z13.web.core.windows.net", "/demo/st/b_u585i_iot02a_ntz-orig.bin");
-    https_download_fw("iotc-260030673750.s3.amazonaws.com", "584af730-2854-4a77-8f3b-ca1696401e08/firmware/11a5c239-ddfe-4b41-925b-deb932899de4/d378209e-d228-49ee-83d6-cb6f77d9e39d.txt?AWSAccessKeyId=ASIATZCYJGNLBR47EN7A&Expires=1698941608&x-amz-security-token=IQoJb3JpZ2luX2VjEOH%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQDN9WuZzD2ptwScwpHofSKVv6Rrpd1IR%2FThR1NhfypHBwIhAKW7qPKGtyRVynya%2BQz9Gmy%2FEOdO0eKImWocNhmUPJEjKugCCBkQABoMMjYwMDMwNjczNzUwIgzfHWTFBkKKGnhWGi4qxQL7lH3frDcPptTEfb0KrnpZBjE1QUViLc97OUZarGYWn3adn0lye%2FuPi7dQFedq3rSHM82tqOMcS%2F97KKscJdLIbnLjL71PX3wpQx5%2B4U7YPrxHDUWNjFtZTnSpJC52uLAwHHyG%2B5dB1M7HqwcaKhKVH1dny6XCVnk0dYngW0UKwl3dozZ6qe0j%2FDpenchkve8iKhuND3IEU7ds18P9ahuIPlU4CD5abH2%2F4S%2FSeoi5pCUPqefscxzQNX%2BI3zC7fsISJCFqQikUHCuQlPBcvAD5lKoLGCTMvXWV%2B5%2BR5vpwvClrLwmoIlWMzMFCAHF0xbzCCucB1%2F4quAwTaz4rFitWTzdNT1H7G%2BZIBm1FJyClwC9QvasIet4KuAtIhi4DwahaI12ciaUf7%2B4EyigXwTNuMV0Y7uEkUSZomauc4t%2BZ%2BvdQooPuMLTwiaoGOp0Bci0Yarf4MQoqNOzTU382gdydkuYsPdVIdM4Jx%2BeJASe8NPkeK805JZIv85lThxARaBFhFsoQbuRXSSvl4DAUwm4xCKtF%2F3tiPvI1eBNmADtKUblyuf95NNbCo9aDamvR9%2FgRsQqlfhPaMRR7hKgGuYPsb25g4jaXtloEFJdnbpjKoVqZnBi0zKphOKLxHFl9zFC1EZajGNyMG27sqA%3D%3D&Signature=etjJH%2FgiktanxnooCyAIdflQ7D4%3D");
+    https_download_fw("iotc-260030673750.s3.amazonaws.com", "/584af730-2854-4a77-8f3b-ca1696401e08/firmware/9db499d2-7f9a-47ac-a0ca-c46a94f58161/2a4dd76c-09d6-4c7a-99cc-24478443e758.iso?AWSAccessKeyId=ASIATZCYJGNLAAWNUWXC&Expires=1699042786&x-amz-security-token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQCqRHrN9EnygWILn7KAxgpKCFxtyZqsocAeBJL%2FAa4auQIgF9vlHt0M7n6uaBjqXLSNMWCSXLG7rCsOrvsNj5zWKWQq6AIINRAAGgwyNjAwMzA2NzM3NTAiDABzwC30tMTOUNWDPSrFAtEG5JJwNBKrDfjlqJ2v3NF4CsuybaIj8dIqeUm7XOXWHjGNirB5VVfvgKkF1fl%2B3e%2BU2iBG9iUJfXczZkgFf21tzUxE3y0vnWQrb7l6My6U1a3x2V9N0iLhslB%2Fai6ulJuMr1rTslj2%2B1WEm0vPcE%2F5oHtUUx42MkQ1V8w2zI%2FZ3AczQSUjnhNbi3pTLYhdJ4RvEp2RXkAp%2BT3i6DgOyCIRtFIP1RVfaPpZGGS4n1VBPcY9pyY%2By5HgFHUktUf0kjuWWrgcLDZk%2BGSI8lLtAHikdSfvW4AfIVCWerklZR%2B1VYToP06%2BPIkIUr%2FMfAAk5zUpmFJm2PV7iD4GyRSwBOAHkje%2BZGgfWeVcLmpFP96UBciVCZYiI5b468eoPtIVu01ztZHqa9g%2FqQ3WO%2F5a7cEEylbPHWgMyc%2F4l2bjaNQMC52jXVAw2YiQqgY6ngG5gu2%2BSFOhf33aPVZgbRCYeE3mjGw%2Bmgg1Uf%2BWouSuELWTfNAE%2B8sydrt%2FQsa1pb0glACkdJOYvrkDGMw%2FjNC3A11fq8a6OZSmqeGyZeVWPXABPiBg9fMkpcF4JL6m0QlDfVCHohCm%2Bd4pyq8ISa7YIlLDSSDvGu%2BpkUE2eDRVjzr4Y7B8YpD58Oqr53840%2BHuMxkZYyU5ap2rf55Izg%3D%3D&Signature=%2F%2FJ%2FByTptzfSUP0TRBiUkX8EhWc%3D");
 	// LogInfo("HTTPS Test Done.");
 
     while (true) {

@@ -377,34 +377,54 @@ static void https_download_fw(const char* host, const char* path) {
 	    setup_request(&request, HTTP_METHOD_GET, host, path);
 
 	    http_status = HTTPClient_InitializeRequestHeaders(&headers, &request);
-		if (0 != http_status) {
+		if (HTTPSuccess != http_status) {
 	    	LogError("HTTP failed to initialize headers! Error: %s", HTTPClient_strerror(http_status));
 	    	return;
 		}
 		http_status = HTTPClient_AddRangeHeader(&headers, data_start, data_end - 1);
-		if (0 != http_status) {
+		if (HTTPSuccess != http_status) {
 			LogError("HTTP failed to add range header! Error: %s", HTTPClient_strerror(http_status));
 			return;
 		}
 
-	    http_status = HTTPClient_Send(
-			&transport_if,
-			&headers, /* HTTPRequestHeaders_t  pRequestHeaders*/
-			NULL, /*const uint8_t * pRequestBodyBuf*/
-			0, /* size_t reqBodyBufLen*/
-			&response,
-			0 /* uint32_t sendFlags*/
-		);
-		if (0 != http_status) {
-	    	LogError("HTTP range(%d-%d) send error: %s", data_start, data_end - 1, HTTPClient_strerror(http_status));
-	    	return;
-		}
+		int tries_remaining = 30;
+        do {
+            http_status = HTTPClient_Send(
+                &transport_if,
+                &headers, /* HTTPRequestHeaders_t  pRequestHeaders*/
+                NULL, /*const uint8_t * pRequestBodyBuf*/
+                0, /* size_t reqBodyBufLen*/
+                &response,
+                0 /* uint32_t sendFlags*/
+            );
+
+            // we need to get at least one successful fetch, and if we do we can try back off.
+            // this part will trigger on 100th try.
+            if (0 != data_start && HTTPNetworkError == http_status) {
+                if (0 == tries_remaining) {
+                    LogError("HTTP range %d-%d send error: %s", data_start, data_end - 1, HTTPClient_strerror(http_status));
+                    return;
+                }
+                LogError("Failed to get chunk range %d-%d. Reconnecting...", data_start, data_end - 1);
+                vTaskDelay( 1000 );
+                mbedtls_transport_disconnect(network_conext);
+                tls_transport_status = mbedtls_transport_connect(
+                	network_conext,
+                	host,
+                    443,
+                    10000,
+            		10000
+                );
+                tries_remaining--;
+            } else if (HTTPSuccess != http_status) {
+                LogError("HTTP range %d-%d send error: %s", data_start, data_end - 1, HTTPClient_strerror(http_status));
+                return;
+            }
+        } while (http_status == HTTPNetworkError);
 
 		if (progress_ctr % 30 == 29) {
-		    LogInfo("Progress %d%%. Waiting...", data_start * 100 / data_length);
+		    LogInfo("Progress %d%%...", data_start * 100 / data_length);
 			progress_ctr = 0;
-		    //vTaskDelay(5000); // TODO: Investigate if requests throttling is needed
-		    LogInfo("Resuming...");
 		} else {
 			progress_ctr++;
 		}
@@ -422,6 +442,9 @@ static void https_download_fw(const char* host, const char* path) {
 	    }
 	}
     mbedtls_transport_disconnect(network_conext);
+    vTaskDelay(500);
+
+    LogInfo("OTA download complete. Launching the new image!");
 
     pal_status = otaPal_CloseFile(&file_context);
 	if (OtaPalSuccess != pal_status) {
@@ -565,7 +588,7 @@ void vIOTC_Ota_Handler(void *parameters) {
 					sAiClassLabels[max_idx]);
 #endif
     // http_download_fw("saleshosted.z13.web.core.windows.net", "/demo/st/b_u585i_iot02a_ntz-orig.bin");
-    https_download_fw("iotc-260030673750.s3.amazonaws.com", "/584af730-2854-4a77-8f3b-ca1696401e08/firmware/9db499d2-7f9a-47ac-a0ca-c46a94f58161/2a4dd76c-09d6-4c7a-99cc-24478443e758.iso?AWSAccessKeyId=ASIATZCYJGNLAAWNUWXC&Expires=1699042786&x-amz-security-token=IQoJb3JpZ2luX2VjEP3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQCqRHrN9EnygWILn7KAxgpKCFxtyZqsocAeBJL%2FAa4auQIgF9vlHt0M7n6uaBjqXLSNMWCSXLG7rCsOrvsNj5zWKWQq6AIINRAAGgwyNjAwMzA2NzM3NTAiDABzwC30tMTOUNWDPSrFAtEG5JJwNBKrDfjlqJ2v3NF4CsuybaIj8dIqeUm7XOXWHjGNirB5VVfvgKkF1fl%2B3e%2BU2iBG9iUJfXczZkgFf21tzUxE3y0vnWQrb7l6My6U1a3x2V9N0iLhslB%2Fai6ulJuMr1rTslj2%2B1WEm0vPcE%2F5oHtUUx42MkQ1V8w2zI%2FZ3AczQSUjnhNbi3pTLYhdJ4RvEp2RXkAp%2BT3i6DgOyCIRtFIP1RVfaPpZGGS4n1VBPcY9pyY%2By5HgFHUktUf0kjuWWrgcLDZk%2BGSI8lLtAHikdSfvW4AfIVCWerklZR%2B1VYToP06%2BPIkIUr%2FMfAAk5zUpmFJm2PV7iD4GyRSwBOAHkje%2BZGgfWeVcLmpFP96UBciVCZYiI5b468eoPtIVu01ztZHqa9g%2FqQ3WO%2F5a7cEEylbPHWgMyc%2F4l2bjaNQMC52jXVAw2YiQqgY6ngG5gu2%2BSFOhf33aPVZgbRCYeE3mjGw%2Bmgg1Uf%2BWouSuELWTfNAE%2B8sydrt%2FQsa1pb0glACkdJOYvrkDGMw%2FjNC3A11fq8a6OZSmqeGyZeVWPXABPiBg9fMkpcF4JL6m0QlDfVCHohCm%2Bd4pyq8ISa7YIlLDSSDvGu%2BpkUE2eDRVjzr4Y7B8YpD58Oqr53840%2BHuMxkZYyU5ap2rf55Izg%3D%3D&Signature=%2F%2FJ%2FByTptzfSUP0TRBiUkX8EhWc%3D");
+    https_download_fw("iotc-260030673750.s3.amazonaws.com", "/584af730-2854-4a77-8f3b-ca1696401e08/firmware/9db499d2-7f9a-47ac-a0ca-c46a94f58161/2a4dd76c-09d6-4c7a-99cc-24478443e758.iso?AWSAccessKeyId=ASIATZCYJGNLFRTG3N5Z&Expires=1699122284&x-amz-security-token=IQoJb3JpZ2luX2VjEBMaCXVzLWVhc3QtMSJIMEYCIQD5o%2B51dIMReUYskkSs4VCz%2F0TEyqgzNvGR1IVU%2F%2FPYwQIhAKUuTmeUfP3hmF3d4mCaektX3JZsn5FX1Z%2B7K0f%2BlnGyKugCCEwQABoMMjYwMDMwNjczNzUwIgzLg9HIaVgG77SpDJAqxQIX8kwAsgRKSaHKGv2Ha5yQYuz5ad8itdfbaCtObAkt3YvM5u9hSXClO5el3E8CX88zHVp%2BJTOkUnubh4Jg614ircETeTocxQb4yC%2Bx6Smb%2FCWzYynF6ImE0e6uMkZex6DdPUVTYCz7aIwCtdxvFFDHEIBixdnEBAFX%2BBaJQ8cNXlbDiwX%2FoZpixDPbNpOsxiOuGfHd%2BT3di%2FSdUJkpinRV3KSXBNiWcsgwnD7hWRYpKAukHh99DFw0JwzR6dUaGbGWEs9K0x%2BQHjSlkoVbRh1plaWieWL9oQA3FLUc5Q8GkVEGlCXPrP20bG8pdTQDNEmcr2fW4aw17ekCEPCicS%2BeO0sZNpxlQO1vIXchH1NV%2B7E2Xv8pgCYS4bCJKMxID9oQiK317m0qQBdA41gii%2BCQTmRemkcWcXWbRYJcKzdufNhaRZ07MM70lKoGOp0BqJLymPpLpecIC0ZktF1Wsff8ThaXX0xKVc2iislODQ9I2wEPS6LoEM72EVjvgAkG3ThR57GETt7efiOfVyjVofXIErw8st8TbyM4y1HBRNFrI7%2FkRT6ntLjGnlA%2FXG08hjvMiSPQpuKnsEfJAkrTLAh9SuE4Km8o7vN01FvJHlAmkO6T5CmG%2B9DVZX4su%2F%2BIZ1nNG15%2F3IeIgx%2FHJg%3D%3D&Signature=BsHL4UPS3o91MP4WF38OWFA1mSE%3D");
 	// LogInfo("HTTPS Test Done.");
 
     while (true) {

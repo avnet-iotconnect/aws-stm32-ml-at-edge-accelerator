@@ -221,7 +221,7 @@ void vInitTask( void * pvArgs )
 
     xResult = xTaskCreate( &net_main, "MxNet", 1024, NULL, 23, NULL );
     configASSERT( xResult == pdTRUE );
-#if 0
+#if 1
     xResult = xTaskCreate( vMQTTAgentTask, "MQTTAgent", (2048 * 2) /* NOTE: Increased */, NULL, 10, NULL );
     configASSERT( xResult == pdTRUE );
 

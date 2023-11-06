@@ -1,7 +1,8 @@
 #!/bin/bash
 
 set -e
-bucket=mlstage-mlstack-sagemakerpipelinemloutput3d9df56c-mjj60ydt8gph
+bucket=nik-stm32-ml-sources-old
+#bucket=mlstage-mlstack-sagemakerpipelinemloutput3d9df56c-mjj60ydt8gph
 mlpath=ml/tmp/ml
 
 wsdir=.

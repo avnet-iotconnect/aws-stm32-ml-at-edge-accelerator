@@ -221,15 +221,23 @@ void vInitTask( void * pvArgs )
 
     xResult = xTaskCreate( &net_main, "MxNet", 1024, NULL, 23, NULL );
     configASSERT( xResult == pdTRUE );
-
-    xResult = xTaskCreate( vMQTTAgentTask, "MQTTAgent", 2048, NULL, 10, NULL );
-    configASSERT( xResult == pdTRUE );
-
-    xResult = xTaskCreate( vOTAUpdateTask, "OTAUpdate", 4096, NULL, tskIDLE_PRIORITY + 1, NULL );
+#if 1
+    xResult = xTaskCreate( vMQTTAgentTask, "MQTTAgent", (2048 * 2) /* NOTE: Increased */, NULL, 10, NULL );
     configASSERT( xResult == pdTRUE );
 
     xResult = xTaskCreate( vMicSensorPublishTask, "MicSense", 1024, NULL, 6, NULL );
     configASSERT( xResult == pdTRUE );
+
+
+    xResult = xTaskCreate( vOTAUpdateTask, "OTAUpdate", 4096, NULL, tskIDLE_PRIORITY + 1, NULL );
+    configASSERT( xResult == pdTRUE );
+
+#else
+
+    extern void vIOTC_Ota_Handler(void *);
+    xResult = xTaskCreate( vIOTC_Ota_Handler, "IOTC OTA", 4096, NULL, tskIDLE_PRIORITY + 1, NULL );
+    configASSERT( xResult == pdTRUE );
+#endif
 
 //    xResult = xTaskCreate( vEnvironmentSensorPublishTask, "EnvSense", 1024, NULL, 6, NULL );
 //    configASSERT( xResult == pdTRUE );

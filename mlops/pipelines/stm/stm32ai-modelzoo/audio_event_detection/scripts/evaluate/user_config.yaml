@@ -1,21 +1,47 @@
 general:
   project_name: AED_project
+  logs_dir: logs
+  saved_models_dir: saved_models
 
 dataset:
   name: esc10
-  class_names: ['dog', 'chainsaw', 'crackling_fire', 'helicopter', 'rain', 'crying_baby', 'clock_tick', 'sneezing', 'rooster', 'sea_waves']
+  class_names:
+    [
+      'dog',
+      'chainsaw',
+      'crackling_fire',
+      'helicopter',
+      'rain',
+      'crying_baby',
+      'clock_tick',
+      'sneezing',
+      'rooster',
+      'sea_waves',
+    ]
   audio_path: /opt/ml/processing/input/datasets/ESC-50/audio
   csv_path: /opt/ml/processing/input/datasets/ESC-50/meta/esc50.csv
   file_extension: .wav
   validation_split: 0.1
   test_split: 0.2
   test_path:
+  use_other_class: True
+  n_samples_per_other_class: 2
+
+dataset_specific:
+  # Contains dataset-specific parameters.
+  fsd50k:
+    csv_folder: /opt/ml/processing/input/datasets/FSD50K/FSD50K.ground_truth
+    dev_audio_folder: /opt/ml/processing/input/datasets/FSD50K/FSD50K.dev_audio
+    eval_audio_folder: /opt/ml/processing/input/datasets/FSD50K/FSD50K.eval_audio
+    audioset_ontology_path: ../utils/dataset_utils/fsd50k/audioset_ontology.json
+    collapse_to_monolabel: False
+    only_keep_monolabel: True
 
 pre_processing:
   min_length: 1
   max_length: 10
   target_rate: 16000
-  top_db: 60
+  top_db: 30
   frame_length: 3200
   hop_length: 3200
   trim_last_second: False
@@ -47,6 +73,7 @@ model:
   expand_last_dim: True
   multi_label: False
   model_path: /opt/ml/processing/input/model/model.tar.gz
+  unknown_class_threshold: 0.0
 
 quantization:
   quantize: True
@@ -58,11 +85,12 @@ quantization:
   export_dir: quantized_models
 
 stm32ai:
+  version: 7.3.0
   optimization: balanced
   serie: STM32U5
   IDE: GCC
-  footprints_on_target: STM32H747I-DISCO
-  path_to_stm32ai: C:\Users\martinlu\work\Xcubeai-7.3.0\windows\stm32ai.exe
+  footprints_on_target: B-U585I-IOT02A
+  path_to_stm32ai: STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/8.0.0/Utilities/windows/stm32ai.exe
 
 mlflow:
   uri: ./mlruns

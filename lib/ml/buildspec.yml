@@ -13,7 +13,16 @@ phases:
 
   pre_build:
     commands:
-      - aws s3 sync $CODEBUILD_SRC_DIR_datasets s3://${ARTIFACT_BUCKET}/train/datasets/ESC-50/  --include="*.wav" --include="*.csv"
+      - aws s3api head-object --bucket ${ARTIFACT_BUCKET} --key train/datasets/ESC-50 || NOT_EXIST=true
+      - |
+        if [ $NOT_EXIST ]; then
+          echo "Downloading ESC-50 Dataset..." ;
+          git clone https://github.com/karolpiczak/ESC-50.git ./temp ;
+
+          echo "Uploading..." ;
+          aws s3 cp temp s3://${ARTIFACT_BUCKET}/train/datasets/ESC-50/ --recursive --quiet;
+        fi
+
   build:
     commands:
       - export PYTHONUNBUFFERED=TRUE

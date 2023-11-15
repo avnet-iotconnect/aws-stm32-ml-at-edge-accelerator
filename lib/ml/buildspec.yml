@@ -13,7 +13,7 @@ phases:
 
   pre_build:
     commands:
-      - aws s3api head-object --bucket ${ARTIFACT_BUCKET} --key train/datasets/FSD50K || NOT_EXIST=true
+      - aws s3api head-object --bucket ${ARTIFACT_BUCKET} --key train/datasets/FSD50K/FSD50K.ground_truth/dev.csv || NOT_EXIST=true
       - |
         if [ $NOT_EXIST ]; then
           echo "Downloading FSD50K Dataset..." ;

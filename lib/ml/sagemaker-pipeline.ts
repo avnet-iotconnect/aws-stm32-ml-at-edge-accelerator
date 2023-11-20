@@ -155,12 +155,13 @@ export class SagmakerPipeline extends Construct {
       role,
     });
 
+/*
     new aws_cloudformation.CfnWaitCondition(this, 'CfnWaitCondition' + Date.now(), {
       handle: waitCompletionUrl,
       timeout: '7200',
       count: 1,
     });
-
+*/
     build.onBuildSucceeded('BuildSucceed', {
       target: new aws_events_targets.LambdaFunction(fn),
     });
@@ -168,12 +169,13 @@ export class SagmakerPipeline extends Construct {
       target: new aws_events_targets.LambdaFunction(fn),
     });
 
+/*
     new triggers.Trigger(this, 'BuildTrigger', {
       handler: fn,
       invocationType: triggers.InvocationType.EVENT,
       executeAfter: [build],
     });
-
+*/
     const key = new aws_kms.Key(this, 'KMS', {
       removalPolicy: RemovalPolicy.DESTROY,
       enableKeyRotation: true,
